@@ -29,6 +29,11 @@ namespace CheckList
                 RefreshList();
                 CleanScreen();
             }
+            else
+            {
+                DisplayAlert
+            ("Warning", "Please choose task to delete", "Ok");
+            }
 
         }
         private async void BtnUpdate_Clicked(object sender, EventArgs e)
@@ -41,6 +46,13 @@ namespace CheckList
 
                 RefreshList();
             }
+            else
+            {
+                DisplayAlert
+              ("Warning", "Please choose task to update", "Ok");
+
+            }
+
         }
 
         private async void BtnAdd_Clicked(object sender, EventArgs e)
