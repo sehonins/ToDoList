@@ -8,18 +8,18 @@ namespace CheckList
 {
     public partial class App : Application
     {
-        private static TaskDatabase taskDatabase;
+        private static TaskDatabase _taskDatabase;
 
         public static TaskDatabase TaskDatabase
         {
             get
             { 
-                if (taskDatabase == null)
+                if (_taskDatabase == null)
                 {
-                    taskDatabase = new TaskDatabase(Path.Combine
+                    _taskDatabase = new TaskDatabase(Path.Combine
                         (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"taskDB.db3"));
                 }
-                return taskDatabase;
+                return _taskDatabase;
             }   
         }
         public App()

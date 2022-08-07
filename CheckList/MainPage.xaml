@@ -1,42 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local ="clr-namespace:CheckList.ViewModel"
+             xmlns:model ="clr-namespace:CheckList.Model"
              x:Class="CheckList.MainPage">
+    <ContentPage.BindingContext>
+        <local:TaskViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
+        <StackLayout x:Name="backGraund" BackgroundColor="White">
+        <Frame x:Name="frame" BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
             <Label Text="TODO List" HorizontalTextAlignment="Center" TextColor="White" FontSize="24"/>
         </Frame>
-            <Entry x:Name="entryTask"  Margin="10,10" Placeholder="Enter task" 
+
+            <Entry x:Name="entryTask" Text="{Binding TaskDescription}" BackgroundColor ="White"  Margin="10,10" Placeholder="Enter task" 
         ></Entry>
-        <Label Text="Is task done?"></Label>
-            <CheckBox x:Name="isDone" Color="#2196F3"></CheckBox>
+
+         <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width ="0.6*"/>
+                    <ColumnDefinition Width ="0.4*"/>
+                </Grid.ColumnDefinitions>
+           <Label HorizontalOptions="End" Text="Is task done?"></Label>
+                <CheckBox x:Name="isDone" IsChecked="{Binding IsDone}" Grid.Column="1" Color="#2196F3"></CheckBox>
+         </Grid>
             
-        <Button x:Name="btnAdd" HorizontalOptions="FillAndExpand" Margin="10,0" Text="Add"
-             BackgroundColor="#2196F3"   TextColor="White" 
-                    Clicked="BtnAdd_Clicked"
-         ></Button>
-        <Button x:Name="btnDelite" HorizontalOptions="FillAndExpand" Margin="10,0" Text="Delete"
-             BackgroundColor="#2196F3"   TextColor="White" 
-             Clicked ="BtnDelite_Clicked"
-        ></Button>
-        <Button x:Name="btnUpdate" HorizontalOptions="FillAndExpand" Margin="10,0" Text="Update"
-             BackgroundColor="#2196F3"   TextColor="White" 
-             Clicked ="BtnUpdate_Clicked"
-        ></Button>
-        <CollectionView x:Name="collectionView" SelectionMode="Single" SelectionChanged="CollectionView_SelectionChanged" >
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                        <Grid>
-                            <Label Grid.Column="1" Text="{Binding TaskDescription}"
-                               TextColor="Black"/>
-                            <Label Grid.Column="2" Text="{Binding IsDone}"
-                               TextColor="Silver" FontSize="Small"/>
-                        </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </StackLayout>
+            
+         <Button x:Name="btnAdd"  Text="Add"
+             BackgroundColor="#2196F3"   TextColor="White"  Command="{Binding SaveDataCommand}"
+                ></Button>
+         <Button  Text="Delete"
+             BackgroundColor="#2196F3"   TextColor="White"  Command="{Binding RemoveDataCommand}"
+                ></Button>
+         <Button  Text="Update"
+             BackgroundColor="#2196F3"   TextColor="White"  Command="{Binding UpdateDataCommand}"
+                ></Button>
+            <Button  Text="Refresh"
+             BackgroundColor="#2196F3"   TextColor="White" Command="{Binding LoadDataComand}" 
+                ></Button>
+
+
+        <RefreshView x:DataType="local:TaskViewModelNotify"
+                         Command ="{Binding LoadDataComand}">
+            <CollectionView 
+                SelectedItem="{Binding SelectedTask}"
+                ItemsSource="{Binding TasksToDo}"
+                x:Name="collectionView"
+                SelectionMode="Single" >
+                <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                                <StackLayout x:DataType="model:TaskToDo">
+                                <Label Text="{Binding TaskDescription}"></Label>
+                                <Label Text="{Binding Id}"></Label>
+                                </StackLayout>
+                        </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+
+        </StackLayout>
         </ContentPage.Content>
 
 </ContentPage>

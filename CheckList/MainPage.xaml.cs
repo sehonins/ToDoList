@@ -6,93 +6,37 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using CheckList.Model;
+using Xamarin.Essentials;
+using CheckList.ViewModel;
+using System.Collections.ObjectModel;
 
 namespace CheckList
 {
     public partial class MainPage : ContentPage
     {
-        TaskToDo selectedTask;
+        TaskViewModelNotify taskViewModel;
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = taskViewModel = new TaskViewModelNotify();  
         }
-        protected override async void OnAppearing()
+        protected override  void OnAppearing()
         {
-            base.OnAppearing();
-            collectionView.ItemsSource = await App.TaskDatabase.GetTasksToDo();
-        }
-        private async void BtnDelite_Clicked(object sender, EventArgs e)
-        {
-            if (selectedTask != null)
-            {
-                await App.TaskDatabase.DeleteTask(selectedTask);
-                RefreshList();
-                CleanScreen();
-            }
-            else
-            {
-                DisplayAlert
-            ("Warning", "Please choose task to delete", "Ok");
-            }
-
-        }
-        private async void BtnUpdate_Clicked(object sender, EventArgs e)
-        {
-            if(selectedTask != null)
-            {
-                selectedTask.TaskDescription = entryTask.Text;
-                selectedTask.IsDone = isDone.IsChecked;
-                await App.TaskDatabase.UpdateTask(selectedTask);
-
-                RefreshList();
-            }
-            else
-            {
-                DisplayAlert
-              ("Warning", "Please choose task to update", "Ok");
-
-            }
-
+           base.OnAppearing();
+            taskViewModel.OnAppearing();
         }
 
-        private async void BtnAdd_Clicked(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(entryTask.Text))
-            {
-                await App.TaskDatabase.SaveTask(new TaskToDo 
-                {
-                    TaskDescription = entryTask.Text,
-                    IsDone = isDone.IsChecked
-                });
-                RefreshList();
-                CleanScreen();
-            }
-            else
-            {
-              DisplayAlert
-              ("Warning", "Description can't be empty", "Ok");
-            }
 
-        }
+        // TODO: Delete later
 
-        private void CleanScreen()
-        {
-            entryTask.Text = String.Empty;
-            isDone.IsChecked = false;
-        }
-        private async void RefreshList()
-        {
-            collectionView.ItemsSource = await 
-                App.TaskDatabase.GetTasksToDo();
-        }
+       // private  void ViewBtn_Clicked(object sender, EventArgs e)
+       // {
+       //    // ResfreshList();
+       // }
 
-        
-        private void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            selectedTask = e.CurrentSelection[0] as TaskToDo;
-            
-            entryTask.Text = selectedTask.TaskDescription;
-            isDone.IsChecked = selectedTask.IsDone;
-        }
+       //public async void ResfreshList()
+       // {
+       //     collectionView.ItemsSource = taskViewModel.TasksToDo.ToList();
+       // }
     }
 }

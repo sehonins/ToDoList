@@ -6,7 +6,7 @@ using SQLite;
 
 namespace CheckList.Model
 {
-    public class TaskDatabase
+    public class TaskDatabase : ITaskDatabase
     {
         private readonly SQLiteAsyncConnection _taskDB;
 
@@ -16,21 +16,26 @@ namespace CheckList.Model
             _taskDB.CreateTableAsync<TaskToDo>();
         }
 
-        public Task<List<TaskToDo>> GetTasksToDo()
+        public async Task<IEnumerable<TaskToDo>> GetTasksToDo()
         {
-            return _taskDB.Table<TaskToDo>().ToListAsync(); 
+            return await Task.FromResult(await _taskDB.Table<TaskToDo>().ToListAsync());
         }
-        public Task<int> SaveTask(TaskToDo task)
+        public async Task<bool> SaveTask(TaskToDo task)
         {
-            return _taskDB.InsertAsync(task);
+            _taskDB.InsertAsync(task);
+            return await Task.FromResult(true); 
         }
-        public Task<int> UpdateTask(TaskToDo task)
+
+        public async Task<bool> UpdateTask(TaskToDo task)
         {
-            return _taskDB.UpdateAsync(task);
+             _taskDB.UpdateAsync(task);
+            return await Task.FromResult(true);
         }
-        public Task<int> DeleteTask(TaskToDo task)
+
+        public Task<bool> DeleteTask(TaskToDo task)
         {
-            return _taskDB.DeleteAsync(task);
+             _taskDB.DeleteAsync(task);
+            return Task.FromResult(true);
         }
         //Reference only
         public Task<List<TaskToDo>> QueryAsync()
